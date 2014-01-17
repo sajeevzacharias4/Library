@@ -27,21 +27,10 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-var dbUrl="library";
-var collections=["books"];
-var db=require("mongojs").connect(dbUrl,collections);
 
 
-app.get('/', routes.index);
-app.get("/books",function(req,res){
-	db.books.find({},function(err,books){
-		if(err) return;
-		var response={
-			books:books
-			};
-		res.json(response);
-	});
-});
+app.get("/books",routes.books.all);
+app.get("/books/:id",routes.books.one);
 
 
 http.createServer(app).listen(app.get('port'), function(){
