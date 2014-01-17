@@ -31,6 +31,7 @@ if ('development' == app.get('env')) {
 
 app.get("/books",routes.books.all);
 app.get("/books/:id",routes.books.one);
+app.post("/books",routes.books.create);
 
 
 http.createServer(app).listen(app.get('port'), function(){

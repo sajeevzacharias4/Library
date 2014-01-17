@@ -20,3 +20,8 @@ exports.books.one=function(req,res)
 		res.json(books);
 	});
 };
+
+exports.books.create=function(req,res){
+	res.json(req.body);
+	db.books.save(req.body);
+};
