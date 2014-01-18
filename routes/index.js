@@ -3,7 +3,14 @@ var db=require("../database.js");
 
 exports.index=function(req,res)
 {
-	res.render("index");
+	db.books.find(function(err,books)
+	{
+		var data=JSON.stringify(books);
+		res.render("index",{
+			appData:data
+		});
+	});
+	
 };
 
 exports.books={};

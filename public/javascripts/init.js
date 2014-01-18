@@ -1,5 +1,5 @@
 $(function(){
-	new AppRouter();
+	window.router=new AppRouter();
 	Backbone.history.start()
 	
 });

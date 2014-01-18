@@ -9,25 +9,38 @@ var BookCollection=Backbone.Collection.extend({
 
 var BookView = Backbone.View.extend({
 
+	events: {
+		"click .name" : "singleBookLink"
+	},
+	
  tagName: "li",
   className: "book",
 
   render: function() {
-
     var template = $("#booktemplate").html();
-
     var compiled = Handlebars.compile(template);
-
     var html = compiled(this.model.attributes);
-
     this.$el.html(html);
-
     return this;
-  }
+  },
 
+	singleBookLink: function(e)
+	{
+		e.preventDefault();
+		var id=this.model.get("_id");
+		router.navigate("book/" +id,{trigger: true});
+	}
 });
 
-
+var DetailedBookView = Backbone.View.extend({
+	render: function() {
+    var template = $("#detailedbooktemplate").html();
+    var compiled = Handlebars.compile(template);
+    var html = compiled(this.model.attributes);
+    this.$el.html(html);
+    return this;
+  }
+});
 	
 var BookCollectionView=Backbone.View.extend({
 	initialize: function(){
@@ -47,14 +60,37 @@ var BookCollectionView=Backbone.View.extend({
 });
 
 var AppRouter=Backbone.Router.extend({
-	routes:{
-		"": "index"
+	initialize: function()
+	{
+		this._setupCollection();
 	},
-	index: function(){
-		var collection=new BookCollection();
-		collection.fetch({reset:true});
-		var view=new BookCollectionView({ collection:collection});
+	
+	routes:{
+		"": "index",
+		"book/:id": "singleBook"
+	},
+	
+	_setupCollection: function(){
+		if(this.collection) return;
+		var data=$("#initialContent").html();
+		this.collection=new BookCollection(JSON.parse(data));
+	},
+	
+	_renderView: function(view)
+	{
 		$(".app").html(view.render().el);
+	},
+	
+	index: function(){
+		var view=new BookCollectionView({ collection:this.collection});
+		this._renderView(view);
+	},
+	
+	singleBook:function(id)
+	{
+		var book=this.collection.get(id);
+		var view=new DetailedBookView({model: book});
+		this._renderView(view);
 	}
 });
 
